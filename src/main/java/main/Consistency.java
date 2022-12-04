@@ -22,7 +22,7 @@ public class Consistency {
             else{
                 if(tagsStack.pop().equals(tags.get(i)));
                 else{
-                    correctTag(x)
+
                 }
             }
         }
