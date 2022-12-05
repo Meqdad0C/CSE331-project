@@ -1,6 +1,7 @@
 package main;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class Users {
@@ -64,5 +65,22 @@ public class Users {
             users.add(user);
         }
 
+    }
+
+    @Override
+    public String toString() {
+        return "Users{ " +
+                "users" + users +
+                '}';
+    }
+    public List<String> toXML(){
+        List<String> XML=new ArrayList<>();
+        XML.add("<users>");
+        for(User user: users){
+            for(String line: user.XML())
+            XML.add(line);
+        }
+        XML.add("</users>");
+        return XML;
     }
 }
