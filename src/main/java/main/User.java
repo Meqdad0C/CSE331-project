@@ -1,5 +1,7 @@
 package main;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class User {
@@ -46,6 +48,46 @@ public class User {
     public void print(){
         System.out.println(id+" "+name+" "+posts[0].body+posts[0].topic[0]+" "+" "+followers);
     }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", posts=" + Arrays.toString(posts) +
+                ", followers=" + followers +
+                '}';
+    }
+
+    public String[] XML() {
+        List<String> XML=new ArrayList<>();
+        XML.add("\t<user>");
+        XML.add("\t\t<id>"+this.id+"</id>");
+        XML.add("\t\t<name>"+this.name+"</name>");
+        XML.add("\t\t<posts>");
+        for(Post post: posts){
+            XML.add("\t\t\t<post>");
+            for(String line : post.XML())
+                 XML.add(line);
+            XML.add("\t\t\t</post>");
+        }
+        XML.add("\t\t</posts>");
+        XML.add("\t\t<followers>");
+        for(Post post: posts){
+
+            for(int id : followers){
+                XML.add("\t\t\t<follower>");
+                XML.add("\t\t\t\t<id>".concat(String.valueOf(id))+"</id>");
+                XML.add("\t\t\t</follower>");
+            }
+
+
+        }
+        XML.add("\t\t</followers>");
+        XML.add("\t</user>");
+
+        return XML.toArray(new String[0]);
+    }
 }
 class Post {
     String[] topic;
@@ -58,4 +100,24 @@ class Post {
     public void setBody(String body) {
         this.body = body;
     }
+
+    @Override
+    public String toString() {
+        return "Post{" +
+                "topic=" + Arrays.toString(topic) +
+                ", body='" + body + '\'' +
+                '}';
+    }
+
+    public String[] XML() {
+        List<String> XML=new ArrayList<>();
+        XML.add("\t\t\t\t<body>".concat(body)+"</body>");
+        XML.add("\t\t\t\t<topics>");
+        for(String topic : topic){
+            XML.add("\t\t\t\t\t<topic>"+topic+"</topic>");
+        }
+        XML.add("\t\t\t\t</topics>");
+        return XML.toArray(new String[0]);
+    }
+
 }
