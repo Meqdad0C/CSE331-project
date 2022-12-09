@@ -155,7 +155,7 @@ class Post {
             }
         }
 
-        json+="]}\n";
+        json+="]}";
         return json;
     }
 

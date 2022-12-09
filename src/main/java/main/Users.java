@@ -73,6 +73,22 @@ public class Users {
                 "users" + users +
                 '}';
     }
+    // function to call the JSON function of each user
+    public String toJson() {
+        String json="{\"users\":[";
+        for(int i=0;i<users.size();i++){
+            json+=users.get(i).toJson();
+            if(i!=users.size()-1){
+                json+=",\n";
+            }
+        }
+        json+="]}";
+        return json;
+    }
+
+
+
+
     public List<String> toXML(){
         List<String> XML=new ArrayList<>();
         XML.add("<users>");
