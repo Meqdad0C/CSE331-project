@@ -58,6 +58,26 @@ public class User {
                 ", followers=" + followers +
                 '}';
     }
+    // function to print the user in json format
+    public String toJson(){
+        String json="{";
+        json+="\"id\":"+id+",\n";
+        json+="\"name\":\""+name+"\",\n";
+        json+="\"posts\":[";
+        for (Post post : posts) {
+            json += post.toJson();
+        }
+        json+="],\n";
+        json+="\"followers\":[";
+        for(int i=0;i<followers.size();i++){
+            json+="{\"id\":"+followers.get(i)+"}";
+            if(i!=followers.size()-1){
+                json+=",";
+            }
+        }
+        json+="]}";
+        return json;
+    }
 
     public String[] XML() {
         List<String> XML=new ArrayList<>();
@@ -118,6 +138,22 @@ class Post {
         }
         XML.add("\t\t\t\t</topics>");
         return XML.toArray(new String[0]);
+    }
+    // function to print the post in json format
+    public String toJson(){
+        String json="{";
+        json+="\"post\":{";
+        json+="\"body\":\""+body+"\",\n";
+        json+="\"topics\":[";
+        for(int i=0;i<topic.length;i++){
+            json+="\""+topic[i]+"\"";
+            if(i!=topic.length-1){
+                json+=",";
+            }
+        }
+
+        json+="]}\n";
+        return json;
     }
 
 }
