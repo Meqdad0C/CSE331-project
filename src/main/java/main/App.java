@@ -9,6 +9,11 @@ public class App {
         //System.out.println(users.users.get(0));
         System.out.println();
         System.out.println();
-        System.out.println(users.users.get(0).toJson());
+        //System.out.println(users.users.get(0).toJson());
+        for(int i=0;i<users.users.size();i++){
+            System.out.println();
+            System.out.println( users.users.get(i).toJson());
+            System.out.println();
+        }
     }
 }

@@ -64,8 +64,11 @@ public class User {
         json+="\"id\":"+id+",\n";
         json+="\"name\":\""+name+"\",\n";
         json+="\"posts\":[";
-        for (Post post : posts) {
-            json += post.toJson();
+        for(int i=0;i<posts.length;i++){
+            json+=posts[i].toJson();
+/*            if(i!=posts.length-1){
+                json+=",";
+            }*/
         }
         json+="],\n";
         json+="\"followers\":[";
