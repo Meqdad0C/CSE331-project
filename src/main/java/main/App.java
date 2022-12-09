@@ -16,5 +16,8 @@ public class App {
             System.out.println();
         }*/
         System.out.println(users.toJson());
+        System.out.println(users.prettyXML());
+        System.out.println(users.prettyJSON());
+        System.out.println(users.prettyXML2());
     }
 }
