@@ -130,4 +130,8 @@ public class Users {
         json+="\n\t]\n}";
         return json;
     }
+
+    public ArrayList<User> getUsers() {
+        return users;
+    }
 }
