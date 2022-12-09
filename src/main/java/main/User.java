@@ -82,7 +82,7 @@ public class User {
         return json;
     }
 
-    public String[] XML() {
+    public List<String> XML() {
         List<String> XML=new ArrayList<>();
         XML.add("\t<user>");
         XML.add("\t\t<id>"+this.id+"</id>");
@@ -109,8 +109,57 @@ public class User {
         XML.add("\t\t</followers>");
         XML.add("\t</user>");
 
-        return XML.toArray(new String[0]);
+        return XML;
     }
+    // function to print the user in xml format
+    public String prettyXML(){
+        String xml="";
+        xml+="<user>\n";
+        xml+="\t<id>"+id+"</id>\n";
+        xml+="\t<name>"+name+"</name>\n";
+        xml+="\t<posts>\n";
+        for(int i=0;i<posts.length;i++){
+            xml+=posts[i].prettyXML();
+        }
+        xml+="\t</posts>\n";
+        xml+="\t<followers>\n";
+        for(int i=0;i<followers.size();i++){
+            xml+="\t\t<follower>\n";
+            xml+="\t\t\t<id>"+followers.get(i)+"</id>\n";
+            xml+="\t\t</follower>\n";
+        }
+        xml+="\t</followers>\n";
+        xml+="</user>\n";
+        return xml;
+    }
+    // pretty JSON function
+    public String prettyJSON(){
+        String json="{\n";
+        json+="\t\"id\":"+id+",\n";
+        json+="\t\"name\":\""+name+"\",\n";
+        json+="\t\"posts\":[\n";
+        for(int i=0;i<posts.length;i++){
+            json+=posts[i].prettyJSON();
+            if(i!=posts.length-1){
+                json+=",\n";
+            }
+        }
+        json+="\n\t],\n";
+        json+="\t\"followers\":[\n";
+        for(int i=0;i<followers.size();i++){
+            json+="\t\t{\n";
+            json+="\t\t\t\"id\":"+followers.get(i)+"\n";
+            json+="\t\t}";
+            if(i!=followers.size()-1){
+                json+=",\n";
+            }
+        }
+        json+="\n\t]\n";
+        json+="}";
+        return json;
+    }
+
+
 }
 class Post {
     String[] topic;
@@ -156,6 +205,34 @@ class Post {
         }
 
         json+="]}";
+        return json;
+    }
+    // function to print the post in xml format
+    public String prettyXML(){
+        String xml="<post>\n";
+        xml+="\t<body>"+body+"</body>\n";
+        xml+="\t<topics>\n";
+        for(int i=0;i<topic.length;i++){
+            xml+="\t\t<topic>"+topic[i]+"</topic>\n";
+        }
+        xml+="\t</topics>\n";
+        xml+="</post>\n";
+        return xml;
+    }
+
+    // pretty JSON function
+    public String prettyJSON(){
+        String json="\t\t{\n";
+        json+="\t\t\t\"body\":\""+body+"\",\n";
+        json+="\t\t\t\"topics\":[\n";
+        for(int i=0;i<topic.length;i++){
+            json+="\t\t\t\t\""+topic[i]+"\"";
+            if(i!=topic.length-1){
+                json+=",\n";
+            }
+        }
+        json+="\n\t\t\t]\n";
+        json+="\t\t}";
         return json;
     }
 

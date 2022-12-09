@@ -87,8 +87,6 @@ public class Users {
     }
 
 
-
-
     public List<String> toXML(){
         List<String> XML=new ArrayList<>();
         XML.add("<users>");
@@ -98,5 +96,38 @@ public class Users {
         }
         XML.add("</users>");
         return XML;
+    }
+    // prettyXML function to make the XML file more readable
+    public List<String> prettyXML(){
+        List<String> XML=new ArrayList<>();
+        XML.add("<users>\n");
+        for(User user: users){
+                XML.add(user.prettyXML());
+        }
+        XML.add("</users>");
+        return XML;
+    }
+    // prettyXML using StringBuilder
+    public String prettyXML2(){
+        StringBuilder XML=new StringBuilder();
+        XML.append("<users>\n");
+        for(User user: users){
+            XML.append(user.prettyXML());
+        }
+        XML.append("</users>");
+        return XML.toString();
+    }
+
+    // prettyJSON function to make the JSON file more readable
+    public String prettyJSON(){
+        String json="{\n\t\"users\":[\n";
+        for(int i=0;i<users.size();i++){
+            json+=users.get(i).prettyJSON();
+            if(i!=users.size()-1){
+                json+=",\n";
+            }
+        }
+        json+="\n\t]\n}";
+        return json;
     }
 }
