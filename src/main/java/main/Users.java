@@ -8,6 +8,8 @@ public class Users {
      ArrayList<User> users = new ArrayList<>();
      // User reference to store the user with most followers
         User mostFollowedUser;
+        // user reference to store the user who follows the most users
+        User mostFollowingUser;
 
     public  Users(List<String> tagData,List<String> tagsQueue) {
         int counter=0;
@@ -84,6 +86,13 @@ public class Users {
         // Return the mostFollowedUser
         return mostFollowedUser;
     }
+
+    // Method to find the user who is following the most users
+    // initialize A mapping of the followers list to this user
+    // that they follow him
+    // Loop through the users
+    // return the user who follows the most users
+    // TODO: Implement this method
 
     @Override
     public String toString() {
