@@ -9,15 +9,10 @@ public class App {
         //System.out.println(users.users.get(0));
         System.out.println();
         System.out.println();
-        //System.out.println(users.users.get(0).toJson());
-        /*for(int i=0;i<users.users.size();i++){
-            System.out.println();
-            System.out.println( users.users.get(i).toJson());
-            System.out.println();
-        }*/
         System.out.println(users.toJson());
         System.out.println(users.prettyXML());
         System.out.println(users.prettyJSON());
         System.out.println(users.prettyXML2());
+        System.out.println(users.getMostFollowedUser());
     }
 }
