@@ -236,4 +236,11 @@ class Post {
         return json;
     }
 
+    public String[] getTopic() {
+        return topic;
+    }
+
+    public String getBody() {
+        return body;
+    }
 }

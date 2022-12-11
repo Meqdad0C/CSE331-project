@@ -16,6 +16,7 @@ public class App {
         System.out.println(users.prettyJSON());
         System.out.println(users.prettyXML2());
         System.out.println(users.getMostFollowedUser());
+        System.out.println(users.searchPosts("spOrts"));
 
         System.out.println(Users.getMutualFollowers(usersList.get(3),usersList.get(0)));
     }

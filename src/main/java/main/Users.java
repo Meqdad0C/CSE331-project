@@ -109,6 +109,23 @@ public class Users {
         // Return the mutualFollowers list
         return mutualFollowers;
     }
+    //Post search: given a specific word or topic, get the posts where this word or topic was mentioned
+    public List<Post> searchPosts(String word){
+        List<Post> posts=new ArrayList<>();
+        for(User user:users){
+            for(Post post:user.getPosts()){
+                if(post.getBody().toLowerCase().contains(word.toLowerCase())){
+                    posts.add(post);
+                }
+                for(String topic:post.getTopic()){
+                    if(topic.toLowerCase().contains(word.toLowerCase())){
+                        posts.add(post);
+                    }
+                }
+            }
+        }
+        return posts;
+    }
 
 
     @Override
