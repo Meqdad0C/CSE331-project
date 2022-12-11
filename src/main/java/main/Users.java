@@ -94,6 +94,23 @@ public class Users {
     // return the user who follows the most users
     // TODO: Implement this method
 
+    // Static Method to find mutual followers between two users
+    public static List<Integer> getMutualFollowers(User user1, User user2) {
+        // Initialize a list to store the mutual followers
+        List<Integer> mutualFollowers = new ArrayList<>();
+        // Loop through the followers of the first user
+        for (Integer follower : user1.getFollowers()) {
+            // If the second user is following the current follower
+            if (user2.getFollowers().contains(follower)) {
+                // Add the follower to the mutualFollowers list
+                mutualFollowers.add(follower);
+            }
+        }
+        // Return the mutualFollowers list
+        return mutualFollowers;
+    }
+
+
     @Override
     public String toString() {
         return "Users{ " +
