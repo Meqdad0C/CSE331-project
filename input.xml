@@ -61,4 +61,23 @@
       </follower>
     </followers>
   </user>
+  <user>
+    <id>4</id>
+    <name>Meqdad Amr</name>
+    <posts>
+      <post>
+        <topics>
+          <topic>sports</topic>
+        </topics>
+        <body>My Simple Post</body>
+      </post>
+    </posts>
+    <followers>
+      <follower>
+        <id>1</id>
+        <id>2</id>
+        <id>3</id>
+      </follower>
+    </followers>
+  </user>
 </users>
