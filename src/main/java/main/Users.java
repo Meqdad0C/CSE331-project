@@ -92,7 +92,7 @@ public class Users {
     // that they follow him
     // Loop through the users
     // return the user who follows the most users
-    // TODO: Implement this method
+    // TODO: Find most following user
 
     // Static Method to find mutual followers between two users
     public static List<Integer> getMutualFollowers(User user1, User user2) {
@@ -126,6 +126,9 @@ public class Users {
         }
         return posts;
     }
+
+    // TODO: Method for each user suggest a list of users to follow (the followers of his followers)
+
 
 
     @Override
