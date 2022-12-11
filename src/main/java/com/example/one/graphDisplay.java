@@ -33,17 +33,19 @@ public class graphDisplay extends Application {
         // convert the list of users to a list of circles
         Circle[] circles = new Circle[usersList.size()];
 
-        //predefine the coordinates of the circles as a pentagon
+        //predefine the coordinates of the circles as a polygon
         double[] x = new double[usersList.size()];
         double[] y = new double[usersList.size()];
-        double radius = 150;
+        double radius = 200;
         double angle = 0;
         double angleIncrement = 2 * Math.PI / usersList.size();
         for (int i = 0; i < usersList.size(); i++) {
-            x[i] = radius * Math.cos(angle) + 300;
-            y[i] = radius * Math.sin(angle) + 300;
+            x[i] = 600 + radius * Math.cos(angle);
+            y[i] = 350 + radius * Math.sin(angle);
             angle += angleIncrement;
         }
+
+
 
 
 
@@ -56,7 +58,7 @@ public class graphDisplay extends Application {
 
 
             // Create the circle with the random coordinates
-            circles[i] = new Circle(x[i], y[i], 100); // Circle with radius 100 at (x[i, y[i)
+            circles[i] = new Circle(x[i], y[i], 50); // Circle with radius 100 at (x[i, y[i)
 
             // Add the user's name as a text label to the circle
             Text text = new Text(usersList.get(i).getName());
@@ -104,8 +106,8 @@ public class graphDisplay extends Application {
                 line.setStroke(circles[i].getStroke());
 
 
-                line.setEndX(line.getEndX() - 20); // Shift the end of the line to the left
-                line.setEndY(line.getEndY() - 20); // Shift the end of the line upwards
+                line.setEndX(line.getEndX() - 15); // Shift the end of the line to the left
+                line.setEndY(line.getEndY() - 15); // Shift the end of the line upwards
                 graph.getChildren().add(line);
             }
         }
