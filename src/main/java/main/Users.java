@@ -6,6 +6,8 @@ import java.util.List;
 
 public class Users {
      ArrayList<User> users = new ArrayList<>();
+     // User reference to store the user with most followers
+        User mostFollowedUser;
 
     public  Users(List<String> tagData,List<String> tagsQueue) {
         int counter=0;
@@ -65,6 +67,22 @@ public class Users {
             users.add(user);
         }
 
+    }
+
+    // Method to find the user with most followers
+    public User getMostFollowedUser() {
+        // Initialize the mostFollowedUser with the first user
+        mostFollowedUser = users.get(0);
+        // Loop through the users
+        for (User user : users) {
+            // If the current user has more followers than the mostFollowedUser
+            if (user.getFollowers().size() > mostFollowedUser.getFollowers().size()) {
+                // Set the mostFollowedUser to the current user
+                mostFollowedUser = user;
+            }
+        }
+        // Return the mostFollowedUser
+        return mostFollowedUser;
     }
 
     @Override
