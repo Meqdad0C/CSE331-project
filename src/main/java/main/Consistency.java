@@ -22,10 +22,43 @@ public class Consistency {
         List<Integer> lineNumbers = reader.getLineNumbers();
         List<String> openTagsOnly = reader.getOpenTagsOnly();
         List<String> closedTagsOnly = reader.getClosedTagsOnly();
+        List<String> allLines = reader.getAllLines();
 
-        // check the first open tag is the same as the last closed tag
+        // check general consistency
+        System.out.println("Checking general consistency...");
+        System.out.println(checkXmlTagConsistency(tagNames,isOpenClose));
 
 
+    }
+
+    public boolean checkXmlTagConsistency(List<String> tagNames, List<Boolean> isOpenClose) {
+        Stack<String> tagsStack = new Stack<>();
+
+        for (int i = 0; i < tagNames.size(); i++) {
+            String tag = tagNames.get(i);
+            boolean isOpenTag = isOpenClose.get(i);
+
+            if (isOpenTag) {
+                // Push open tag onto stack
+                tagsStack.push(tag);
+            } else {
+                // Check if the top element on the stack is the matching open tag for this closed tag
+                String openTag = tagsStack.pop();
+                if (!openTag.equals(tag)) {
+                    // Open and closed tags do not match, so XML tags are not consistent
+                    return false;
+                }
+            }
+        }
+
+        // Check if the stack is empty, which indicates that all open tags have been closed
+        if (!tagsStack.isEmpty()) {
+            // Stack is not empty, so there are unclosed open tags, which means XML tags are not consistent
+            return false;
+        }
+
+        // If we reach this point, then all open tags have been matched with closed tags, so XML tags are consistent
+        return true;
     }
 
 
@@ -38,4 +71,5 @@ public class Consistency {
         validator.isConsistent();
 
     }
+
 }
