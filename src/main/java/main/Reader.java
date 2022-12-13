@@ -34,6 +34,8 @@ public class Reader {
         // data structure to hold closed tags only
    private List<String> closedTagsOnly = new LinkedList<>();
 
+        private List<String> allLines = new LinkedList<>();
+
     public Reader(String xml) {
         this.xml = xml;
         int counter1=0;
@@ -44,7 +46,6 @@ public class Reader {
 
         // read all lines from file
         Path file = Paths.get(xml);
-        List<String> allLines = null;
         try {
             allLines = Files.readAllLines(file);
         } catch (IOException e) {
@@ -158,5 +159,9 @@ public class Reader {
 
     public List<String> getClosedTagsOnly() {
         return closedTagsOnly;
+    }
+
+    public List<String> getAllLines() {
+        return allLines;
     }
 }
