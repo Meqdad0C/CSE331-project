@@ -6,6 +6,9 @@ import java.util.List;
 public class App {
     public static void main(String[] args) {
         Reader reader=new Reader("input.xml");
+        Reader reader2=reader.clone();
+
+
         Users users=new Users(reader.getTagData(),reader.getTagsQueue());
         List<User> usersList=users.getUsers();
         //System.out.println(users.users.get(0));
