@@ -3,6 +3,6 @@ module com.example.one {
     requires javafx.fxml;
 
 
-    opens com.example.one to javafx.fxml;
-    exports com.example.one;
+    opens GUI to javafx.fxml;
+    exports GUI;
 }

@@ -1,4 +1,4 @@
-package com.example.one;
+package GUI;
 
 import javafx.application.Application;
 import javafx.scene.Group;
