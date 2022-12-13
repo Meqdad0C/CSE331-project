@@ -11,6 +11,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Reader {
+    private String xml;
+
    private Stack<String> tagsStack = new Stack<>();
 
    private List<String> tagsQueue = new LinkedList<>();
@@ -33,6 +35,7 @@ public class Reader {
    private List<String> closedTagsOnly = new LinkedList<>();
 
     public Reader(String xml) {
+        this.xml = xml;
         int counter1=0;
         Pattern pattern = Pattern.compile("<[^?!>]*>");
         Pattern pattern1 = Pattern.compile(">([^<]*)<");
@@ -106,6 +109,12 @@ public class Reader {
         System.out.println(tagData);
 
     }
+
+    // method to return cloned object
+    public Reader clone() {
+        return new Reader(xml);
+    }
+
 
     public Stack<String> getTagsStack() {
         return tagsStack;
