@@ -17,9 +17,9 @@ import java.util.Objects;
 public final class HuffmanDecompress {
 
     // Command line main application function.
-    public static void main(String[] args) throws IOException {
+    public static void main1(File file1) throws IOException {
 
-        File inputFile = new File("output.txt");
+        File inputFile =file1;
         File outputFile = new File("decompressedoutput.txt");
 
         // Perform file decompression

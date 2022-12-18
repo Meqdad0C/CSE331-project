@@ -18,10 +18,10 @@ import java.util.Objects;
 public final class HuffmanCompress {
 
 
-    public static void main(String[] args) throws IOException {
+    public static void main1(File file1) throws IOException {
 
-        File inputFile = new File("input.xml");
-        File outputFile = new File("output.txt");
+        File inputFile = file1;
+        File outputFile =new File("output.txt");
 
         // Read input file once to compute symbol frequencies.
         FrequencyTable freqs = getFrequencies(inputFile);
