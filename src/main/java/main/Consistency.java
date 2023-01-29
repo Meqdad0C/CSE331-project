@@ -30,7 +30,32 @@ public class Consistency {
 
 
     }
+    // function to swap tags in all lines
+    public void swapTagsInAllLines(List<String> openTagsOnly, List<String> closedTagsOnly, List<Boolean> isOpenClose, List<String> allLines, List<Integer> lineNumbers){
+        for (int i = 0; i<lineNumbers.size(); i++){
+            // if the tag is open
+            // replace the open tag in alllines with the open tag in the openTagsOnly list
+            if (isOpenClose.get(i)){
+                // if the open tag is replace_me
+                // replace the open tag in allLines with the closed tag in the closedTagsOnly list
+                if (openTagsOnly.get(0).equals("REPLACE_ME")){
+                    allLines.set(lineNumbers.get(i),closedTagsOnly.get(0));
+                    closedTagsOnly.remove(0);
+                }
+                else {
+                    allLines.set(lineNumbers.get(i),openTagsOnly.get(0));
+                    openTagsOnly.remove(0);
+                }
 
+                allLines.set(lineNumbers.get(i),allLines.get(lineNumbers.get(i)).replace(reader.getTagsQueue().remove(0),"<" + openTagsOnly.get(0) + ">"));
+                openTagsOnly.remove(0);
+            }
+            else {
+                allLines.set(lineNumbers.get(i),allLines.get(lineNumbers.get(i)).replace(reader.getTagsQueue().remove(0),"</" + closedTagsOnly.get(0) + ">"));
+                closedTagsOnly.remove(0);
+            }
+        }
+    }
     public boolean checkXmlTagConsistency(List<String> tagNames, List<Boolean> isOpenClose) {
         Stack<String> tagsStack = new Stack<>();
 
