@@ -30,6 +30,29 @@ public class Consistency {
 
 
     }
+    // check if open tags matches closed tags with two pointers
+    public void fixClosingTags(List<String> openTagsOnly, List<String> closedTagsOnly, List<Boolean> isOpenClose) {
+        int openTagsPointer = -1;
+        int closedTagsPointer = 0;
+        int openClosedCounter = 0;
+        while (closedTagsPointer < closedTagsOnly.size()){
+            if(isOpenClose.get(openClosedCounter)){
+                openTagsPointer++;
+            }
+            else {
+                if (!openTagsOnly.get(openTagsPointer).equals(closedTagsOnly.get(closedTagsPointer))) {
+                    // replace the closed tag with the open tag
+                    closedTagsOnly.set(closedTagsPointer, openTagsOnly.get(openTagsPointer));
+                }
+                openTagsOnly.remove(openTagsPointer);
+                if(openTagsPointer > 0){
+                    openTagsPointer--;
+                }
+                closedTagsPointer++;
+            }
+            openClosedCounter++;
+        }
+    }
     // function to swap tags in all lines
     public void swapTagsInAllLines(List<String> openTagsOnly, List<String> closedTagsOnly, List<Boolean> isOpenClose, List<String> allLines, List<Integer> lineNumbers){
         for (int i = 0; i<lineNumbers.size(); i++){
@@ -89,7 +112,7 @@ public class Consistency {
 
     // Main method
     public static void main(String[] args) {
-        String fileName = "test.xml";
+        String fileName = "input.xml";
         Reader reader = new Reader(fileName);
         // Create a new instance of the class
         Consistency validator = new Consistency(reader);
