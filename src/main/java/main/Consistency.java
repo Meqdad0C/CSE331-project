@@ -30,6 +30,34 @@ public class Consistency {
 
 
     }
+    public void checkTagsBalance(List<String> openTagsOnly, List<String> closedTagsOnly) {
+        if (openTagsOnly.size() == closedTagsOnly.size()){
+            return;
+        }
+        if (openTagsOnly.size() > closedTagsOnly.size()){
+            System.out.println("There are more open tags than closed tags");
+            // append the missing closed tags
+            for (int i = 0; i < openTagsOnly.size() - closedTagsOnly.size(); i++) {
+                closedTagsOnly.add("REPLACE_ME");
+                reader.getIsOpenClose().add(false);
+                reader.getAllLines().add("</REPLACE_ME>");
+                reader.getTagsQueue().add("</REPLACE_ME>");
+                reader.getLineNumbers().add(reader.getAllLines().size()-1);
+
+            }
+        }
+        else {
+            System.out.println("There are more closed tags than open tags");
+            // append the missing open tags
+            for (int i = 0; i < closedTagsOnly.size() - openTagsOnly.size(); i++) {
+                openTagsOnly.add("REPLACE_ME");
+                reader.getIsOpenClose().add(true);
+                reader.getAllLines().add("<REPLACE_ME>");
+                reader.getTagsQueue().add("<REPLACE_ME>");
+                reader.getLineNumbers().add(reader.getAllLines().size()-1);
+            }
+        }
+    }
     // check if open tags matches closed tags with two pointers
     public void fixClosingTags(List<String> openTagsOnly, List<String> closedTagsOnly, List<Boolean> isOpenClose) {
         int openTagsPointer = -1;
