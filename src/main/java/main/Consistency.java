@@ -11,6 +11,7 @@ public class Consistency {
         this.reader = reader;
     }
 
+
     public void isConsistent() {
         Stack<String> tagsStack = reader.getTagsStack();
         List<String> tagsQueue = reader.getTagsQueue();
@@ -21,14 +22,25 @@ public class Consistency {
         List<List<Integer>> closedTagsIndices = reader.getClosedTagsIndices();
         List<Integer> lineNumbers = reader.getLineNumbers();
         List<String> openTagsOnly = reader.getOpenTagsOnly();
+        // clone openTagsOnly
+        List<String> openTagsOnlyClone = reader.clone().getOpenTagsOnly();
         List<String> closedTagsOnly = reader.getClosedTagsOnly();
         List<String> allLines = reader.getAllLines();
 
         // check general consistency
         System.out.println("Checking general consistency...");
+        checkTagsBalance(openTagsOnly,closedTagsOnly);
         System.out.println(checkXmlTagConsistency(tagNames,isOpenClose));
+        fixClosingTags(openTagsOnly,closedTagsOnly,isOpenClose);
+        System.out.println("Checking general consistency... Done");
+        System.out.println("Open Tags After Fixing " + openTagsOnly);
+        System.out.println("Closed Tags After Fixing" + closedTagsOnly);
+        swapTagsInAllLines(openTagsOnlyClone,closedTagsOnly,isOpenClose,allLines,lineNumbers);
 
-
+        // print all lines
+        for (String line : allLines) {
+            System.out.println(line);
+        }
     }
     public void checkTagsBalance(List<String> openTagsOnly, List<String> closedTagsOnly) {
         if (openTagsOnly.size() == closedTagsOnly.size()){
