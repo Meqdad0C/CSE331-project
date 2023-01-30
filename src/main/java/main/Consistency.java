@@ -1,5 +1,6 @@
 package main;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
 
@@ -23,26 +24,23 @@ public class Consistency {
         List<Integer> lineNumbers = reader.getLineNumbers();
         List<String> openTagsOnly = reader.getOpenTagsOnly();
         // clone openTagsOnly
-        List<String> openTagsOnlyClone = reader.clone().getOpenTagsOnly();
         List<String> closedTagsOnly = reader.getClosedTagsOnly();
         List<String> allLines = reader.getAllLines();
 
         // check general consistency
         System.out.println("Checking general consistency...");
-        checkTagsBalance(openTagsOnly,closedTagsOnly);
-        System.out.println(checkXmlTagConsistency(tagNames,isOpenClose));
+        checkTagsBalance(openTagsOnly,closedTagsOnly, allLines);
+
         fixClosingTags(openTagsOnly,closedTagsOnly,isOpenClose);
-        System.out.println("Checking general consistency... Done");
-        System.out.println("Open Tags After Fixing " + openTagsOnly);
-        System.out.println("Closed Tags After Fixing" + closedTagsOnly);
-        swapTagsInAllLines(openTagsOnlyClone,closedTagsOnly,isOpenClose,allLines,lineNumbers);
+
+        swapTagsInAllLines(openTagsOnly,closedTagsOnly,isOpenClose,allLines,lineNumbers);
 
         // print all lines
         for (String line : allLines) {
             System.out.println(line);
         }
     }
-    public void checkTagsBalance(List<String> openTagsOnly, List<String> closedTagsOnly) {
+    public void checkTagsBalance(List<String> openTagsOnly, List<String> closedTagsOnly, List<String> allLines) {
         if (openTagsOnly.size() == closedTagsOnly.size()){
             return;
         }
@@ -60,18 +58,83 @@ public class Consistency {
         }
         else {
             System.out.println("There are more closed tags than open tags");
-            // append the missing open tags
-            for (int i = 0; i < closedTagsOnly.size() - openTagsOnly.size(); i++) {
-                openTagsOnly.add("REPLACE_ME");
-                reader.getIsOpenClose().add(true);
-                reader.getAllLines().add("<REPLACE_ME>");
-                reader.getTagsQueue().add("<REPLACE_ME>");
-                reader.getLineNumbers().add(reader.getAllLines().size()-1);
+            // compare openTagsOnly and closedTagsOnly and make new list of the missing open tag
+            List<String> OpenTagsClone = reader.clone().getOpenTagsOnly();
+            List<String> ClosedTagsClone = reader.clone().getClosedTagsOnly();
+            List<String> missingOpenTags = new ArrayList<>();
+
+
+            // closedTags LineNumbers
+            List<Integer> closedTagsLineNumbers = new ArrayList<>();
+            for (int i = 0; i < reader.getIsOpenClose().size(); i++) {
+                if (!reader.getIsOpenClose().get(i)){
+                    closedTagsLineNumbers.add(reader.getLineNumbers().get(i));
+                }
             }
+
+            // openTags LineNumbers
+            List<Integer> openTagsLineNumbers = new ArrayList<>();
+            for (int i = 0; i < reader.getIsOpenClose().size(); i++) {
+                if (reader.getIsOpenClose().get(i)){
+                    openTagsLineNumbers.add(reader.getLineNumbers().get(i));
+                }
+            }
+
+            for (int i = 0; i < ClosedTagsClone.size(); i++) {
+                String closedTag = ClosedTagsClone.get(i);
+                if (!OpenTagsClone.remove(closedTag)) {
+                    missingOpenTags.add(closedTag);
+                }
+            }
+
+            for (int i = 0; i < missingOpenTags.size(); i++) {
+                addOpenTag(reader.getIsOpenClose(),reader.getOpenTagsOnly(),reader.getClosedTagsOnly(),closedTagsLineNumbers, allLines);
+            }
+
+            System.out.println("dada");
+
         }
     }
+
+    private void addOpenTag(List<Boolean> isOpenClose, List<String> openTagsOnly, List<String> closedTagsOnly, List<Integer> closedTagsLineNumbers, List<String> allLines) {
+        // create a stack of open tags
+        Stack<String> openTagsStack = new Stack<>();
+        int openTagsCount = -1;
+        int closedTagsCount = 0;
+        // iterate over isOpenClose list and add open tags to the stack and remove them when a closed tag is found
+        for (int i = 0; i < isOpenClose.size(); i++) {
+            if (isOpenClose.get(i)) {
+                openTagsStack.push(openTagsOnly.get(++openTagsCount));
+//                openTagsCount++;
+            } else {
+                // if the popped tag is not the same as the closed tag then add the missing open tag
+                String poppedTag = openTagsStack.pop();
+                if (!poppedTag.equals(closedTagsOnly.get(closedTagsCount))) {
+                    openTagsOnly.add(openTagsCount+1,closedTagsOnly.get(closedTagsCount));
+                    // add it to the queue
+                    reader.getTagsQueue().add(i,"<"+closedTagsOnly.get(closedTagsCount)+">");
+                    reader.getLineNumbers().add(closedTagsCount,closedTagsLineNumbers.get(closedTagsCount));
+                    isOpenClose.add(i,true);
+                    String amendedLine =  "<" + closedTagsOnly.get(closedTagsCount)+">" + "</" + closedTagsOnly.get(closedTagsCount)+">";
+                    String target = "</" + closedTagsOnly.get(closedTagsCount)+">";
+                    int index = closedTagsLineNumbers.get(closedTagsCount);
+                    allLines.set(index, allLines.get(index).replace(target, amendedLine));
+                    return;
+                }
+                closedTagsCount++;
+            }
+
+        }
+    }
+
+
+
     // check if open tags matches closed tags with two pointers
     public void fixClosingTags(List<String> openTagsOnly, List<String> closedTagsOnly, List<Boolean> isOpenClose) {
+        // copy openTagsOnly into a new list
+        List<String> openTagsOnlyClone = new ArrayList<>(openTagsOnly);
+
+
         int openTagsPointer = -1;
         int closedTagsPointer = 0;
         int openClosedCounter = 0;
@@ -80,11 +143,11 @@ public class Consistency {
                 openTagsPointer++;
             }
             else {
-                if (!openTagsOnly.get(openTagsPointer).equals(closedTagsOnly.get(closedTagsPointer))) {
+                if (!openTagsOnlyClone.get(openTagsPointer).equals(closedTagsOnly.get(closedTagsPointer))) {
                     // replace the closed tag with the open tag
-                    closedTagsOnly.set(closedTagsPointer, openTagsOnly.get(openTagsPointer));
+                    closedTagsOnly.set(closedTagsPointer, openTagsOnlyClone.get(openTagsPointer));
                 }
-                openTagsOnly.remove(openTagsPointer);
+                openTagsOnlyClone.remove(openTagsPointer);
                 if(openTagsPointer > 0){
                     openTagsPointer--;
                 }
@@ -99,17 +162,6 @@ public class Consistency {
             // if the tag is open
             // replace the open tag in alllines with the open tag in the openTagsOnly list
             if (isOpenClose.get(i)){
-                // if the open tag is replace_me
-                // replace the open tag in allLines with the closed tag in the closedTagsOnly list
-                if (openTagsOnly.get(0).equals("REPLACE_ME")){
-                    allLines.set(lineNumbers.get(i),closedTagsOnly.get(0));
-                    closedTagsOnly.remove(0);
-                }
-                else {
-                    allLines.set(lineNumbers.get(i),openTagsOnly.get(0));
-                    openTagsOnly.remove(0);
-                }
-
                 allLines.set(lineNumbers.get(i),allLines.get(lineNumbers.get(i)).replace(reader.getTagsQueue().remove(0),"<" + openTagsOnly.get(0) + ">"));
                 openTagsOnly.remove(0);
             }
