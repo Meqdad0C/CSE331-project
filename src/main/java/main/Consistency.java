@@ -1,12 +1,16 @@
 package main;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
 
 public class Consistency {
     private Reader reader;
-
+    private static boolean valid=false;
+    public Reader getReader() {
+        return reader;
+    }
 
     public Consistency(Reader reader) {
         this.reader = reader;
@@ -42,6 +46,7 @@ public class Consistency {
     }
     public void checkTagsBalance(List<String> openTagsOnly, List<String> closedTagsOnly, List<String> allLines) {
         if (openTagsOnly.size() == closedTagsOnly.size()){
+            valid=true;
             return;
         }
         if (openTagsOnly.size() > closedTagsOnly.size()){
@@ -203,13 +208,18 @@ public class Consistency {
 
 
     // Main method
-    public static void main(String[] args) {
-        String fileName = "input.xml";
+    public static Reader main(File file) {
+        String fileName = file.getAbsolutePath();
         Reader reader = new Reader(fileName);
         // Create a new instance of the class
         Consistency validator = new Consistency(reader);
         validator.isConsistent();
 
+        return reader;
+
     }
 
+    public static boolean isValid() {
+        return valid;
+    }
 }

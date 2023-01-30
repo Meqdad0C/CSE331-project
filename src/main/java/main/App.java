@@ -5,7 +5,7 @@ import java.util.List;
 
 public class App {
     public static void main(String[] args) {
-        Reader reader=new Reader("input2.xml");
+        Reader reader=new Reader("input.xml");
         Reader reader2=reader.clone();
 
 //        ArrayList<String> lines=Prettifying.prettify("input2.xml");

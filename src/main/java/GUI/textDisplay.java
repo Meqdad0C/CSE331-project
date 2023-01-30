@@ -22,7 +22,7 @@ public class textDisplay extends Application {
 
     // The TextArea that displays the contents of the text file
     private TextArea textArea;
-    private ArrayList<String> XMLLines;
+    private ArrayList<String> XMLLines =new ArrayList<>();
 
     // The File that is currently open
     private File openFile;
@@ -56,15 +56,23 @@ public class textDisplay extends Application {
                 counter.getAndIncrement();
             }
             );
+            Button MinifyButton = new Button("Minify");
+            MinifyButton.setOnAction(event -> {
+                textArea.clear();
+                for (String line: XMLLines){
+                    textArea.appendText(line.trim());
+                }
+            });
             Button consistencyButton = new Button("Check Consistency");
             consistencyButton.setOnAction(event -> {
                 Alert a=new Alert(Alert.AlertType.CONFIRMATION);
-                Consistency1.fixConsistency(openFile);
-                if(Consistency1.errors==1){
-                    a.setHeaderText("the file has 1 error in consistency");
+//                Consistency1.fixConsistency(openFile);
+                Reader reader=Consistency.main(openFile);
+                if(Consistency.isValid()){
+                    a.setHeaderText("this XML file is valid!");
                 }
                 else{
-                    a.setHeaderText("the file has "+Consistency1.errors+" errors in consistency");
+                    a.setHeaderText("this XML file has errors in consistency");
                 }
 
 
@@ -73,7 +81,10 @@ public class textDisplay extends Application {
                 if(!result.isPresent());
                 // alert is exited, no button has been pressed.
                 else if(result.get() == ButtonType.OK){
-                    prettify1(Consistency1.reader);
+                    textArea.clear();
+                    for (String line: reader.getAllLines()){
+                        textArea.appendText(line + "\n");
+                    }
                 }
                 //oke button is pressed
                 else if(result.get() == ButtonType.CANCEL);
@@ -130,7 +141,7 @@ public class textDisplay extends Application {
 
 
             // Add the buttons and the TextArea to the scene
-            HBox buttonBox = new HBox(openButton, closeButton, saveButton,compressButton,decompressButton,jsonButton,consistencyButton,checkBox);
+            HBox buttonBox = new HBox(openButton, closeButton, saveButton,compressButton,decompressButton,jsonButton,consistencyButton,checkBox,MinifyButton);
             VBox root = new VBox(buttonBox, textArea);
 
             // Show the window
@@ -192,6 +203,7 @@ public class textDisplay extends Application {
                 String line = null;
                 while ((line = reader.readLine()) != null) {
                     textArea.appendText(line + "\n");
+                    XMLLines.add(line);
                 }
                 reader.close();
             }
