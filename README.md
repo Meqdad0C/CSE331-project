@@ -1,4 +1,4 @@
-# CSE331-project
+#                                         CSE331-project
 # CAUTION
 ##### The jar file must be opened using terminal by this command "but change the path with the actual path in your pc"
 ## The command
