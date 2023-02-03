@@ -27,7 +27,7 @@ public class textDisplay extends Application {
     // The File that is currently open
     private File openFile;
     private String ext=".xml";
-    private File outputFile;
+
 
     public static void main(String[] args) {
 
@@ -46,8 +46,7 @@ public class textDisplay extends Application {
             primaryStage.setTitle("Editor");
 
             // Create buttons for opening, closing, and saving the text file
-            Button openButton = new Button("Open");
-            openButton.setOnAction(event -> openFile());
+
             Button closeButton = new Button("Clear");
             closeButton.setOnAction(event -> closeFile());
             Button saveButton = new Button("Save");
@@ -63,33 +62,50 @@ public class textDisplay extends Application {
                     textArea.appendText(line.trim());
                 }
             });
+            Button GraphButton = new Button("Network Analysis");
+            GraphButton.setOnAction(event -> {
+                try {
+                    Stage GraphStage=graphDisplay.getPrimaryStage(openFile);
+                    GraphStage.show();
+                }catch (Exception e){
+
+                    Alert a=new Alert(Alert.AlertType.ERROR);
+                    a.setHeaderText("this XML not valid for network analysis!");
+                    System.out.println(e);
+                    a.showAndWait();
+                }
+
+
+            });
             Button consistencyButton = new Button("Check Consistency");
             consistencyButton.setOnAction(event -> {
                 Alert a=new Alert(Alert.AlertType.CONFIRMATION);
 //                Consistency1.fixConsistency(openFile);
                 Reader reader=Consistency.main(openFile);
-                if(Consistency.isValid()){
+                if(reader.getAllLines().equals(XMLLines)){
                     a.setHeaderText("this XML file is valid!");
                 }
                 else{
                     a.setHeaderText("this XML file has errors in consistency");
+                    a.setContentText("press OK to fix the errors");
                 }
 
 
-                a.setContentText("press OK to fix the errors");
+
                 Optional<ButtonType> result = a.showAndWait();
                 if(!result.isPresent());
                 // alert is exited, no button has been pressed.
-                else if(result.get() == ButtonType.OK){
+                else if(result.get() == ButtonType.OK&&!reader.getAllLines().equals(XMLLines)){
                     textArea.clear();
-                    for (String line: reader.getAllLines()){
+
+                    XMLLines= (ArrayList<String>) reader.getAllLines();
+                    for (String line: XMLLines){
                         textArea.appendText(line + "\n");
                     }
                 }
                 //oke button is pressed
                 else if(result.get() == ButtonType.CANCEL);
-                // cancel button is pressed
-                Consistency1.errors=0;
+
             });
             Button compressButton = new Button("Compress");
             compressButton.setOnAction(event -> {
@@ -109,39 +125,47 @@ public class textDisplay extends Application {
             });
             Button jsonButton= new Button("Convert to JSON");
             jsonButton.setOnAction(event -> {
-                Reader reader=new Reader(openFile.getName());
-                Users users=new Users(reader.getTagData(),reader.getTagsQueue());
-                String s=users.prettyJSON();
-                textArea.clear();
 
-                textArea.appendText(s);
-                ext="json";
+                try {
+                    Reader reader=new Reader(openFile.getName());
+                    Users users=new Users(reader.getTagData(),reader.getTagsQueue());
+                    String s=users.prettyJSON();
+                    textArea.clear();
 
+                    textArea.appendText(s);
+                    ext="json";
+                }catch (Exception e){
+                    Alert a=new Alert(Alert.AlertType.ERROR);
+                    a.setHeaderText("this XML not valid to be converted to JSON!");
+                    a.showAndWait();
+                }
 
 
             });
-            CheckBox checkBox=new CheckBox("Prettified");
-            boolean b = checkBox.isSelected();
-            checkBox.setPadding(new Insets(5));
-            checkBox.setSelected(false);
-            checkBox.setOnAction(actionEvent ->{
-                if(checkBox.isSelected()){
-                    prettify1(new Reader(openFile.getAbsolutePath()));
-                }
-                else {
-                    try {
-                        openFile1();
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    }
-                }
+            Button checkBox=new Button("Prettify");
 
+            checkBox.setOnAction(actionEvent ->{
+
+                    prettify1(new Reader(XMLLines));
+                    checkBox.setDisable(true);
             } );
 
+            //update XMLlines on any action
+            textArea.setOnKeyTyped(inputMethodEvent -> {
+                String s=textArea.getText();
+                XMLLines.clear();
+                for(String s1:s.split("\n")){
+                  XMLLines.add(s1);
+                }
+            });
+            Button openButton = new Button("Open");
+            openButton.setOnAction(event -> {
+                openFile();
+                checkBox.setDisable(false);
 
-
+            });
             // Add the buttons and the TextArea to the scene
-            HBox buttonBox = new HBox(openButton, closeButton, saveButton,compressButton,decompressButton,jsonButton,consistencyButton,checkBox,MinifyButton);
+            HBox buttonBox = new HBox(openButton, closeButton, saveButton,compressButton,decompressButton,jsonButton,consistencyButton,MinifyButton,GraphButton,checkBox);
             VBox root = new VBox(buttonBox, textArea);
 
             // Show the window
@@ -153,19 +177,7 @@ public class textDisplay extends Application {
         }
     }
 
-    private void openFile1() throws IOException {
-        textArea.clear();
-        if (openFile != null) {
 
-
-            BufferedReader reader = new BufferedReader(new FileReader(openFile));
-            String line = null;
-            while ((line = reader.readLine()) != null) {
-                textArea.appendText(line + "\n");
-            }
-            reader.close();
-        }
-    }
     private void prettify1(Reader reader) {
         XMLLines=Prettifying.prettify(reader);
         textArea.clear();
@@ -191,6 +203,7 @@ public class textDisplay extends Application {
             fileChooser.setTitle("Select a text file");
             File textFile = fileChooser.showOpenDialog(textArea.getScene().getWindow());
             openFile=textFile;
+            XMLLines.clear();
             ext=openFile.getName().split("\\.")[1];
             textArea.clear();
 
@@ -222,7 +235,6 @@ public class textDisplay extends Application {
 
     private void saveText(int num) {
         try {
-
             // Prompt the user to select a directory to save the file to
             DirectoryChooser directoryChooser = new DirectoryChooser();
 

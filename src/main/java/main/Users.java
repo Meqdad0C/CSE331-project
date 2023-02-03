@@ -9,7 +9,8 @@ public class Users {
      // User reference to store the user with most followers
         User mostFollowedUser;
         // user reference to store the user who follows the most users
-        User mostFollowingUser;
+        User mostActiveUser;
+    // user reference to store the user who has the most connections
 
     public  Users(List<String> tagData,List<String> tagsQueue) {
         int counter=0;
@@ -48,6 +49,7 @@ public class Users {
                             i++;
                         }
                         i++;
+                        post.setPublisher(user);
                         posts.add(post);
                     }
                     Post[] posts1=new Post[posts.size()];
@@ -68,6 +70,8 @@ public class Users {
             }
             users.add(user);
         }
+        this.mostFollowedUser=getMostFollowedUser();
+        this.mostActiveUser=getMostActiveUser();
 
     }
 
@@ -87,38 +91,62 @@ public class Users {
         return mostFollowedUser;
     }
 
+    public User getMostActiveUser() {
+        Integer[] connections = new Integer[users.size()];
+        // Loop through the users
+        for (User user : users) {
+            connections[user.getId()-1] = 0;
+            for (User user1 : users) {
+                if (user1.getFollowers().contains(user.getId())) connections[user.getId()-1]++;
+            }
+
+        }
+        int max = connections[0];
+        int index=0;
+
+        for (int i=1;i<connections.length;i++) {
+           if(connections[i]>max)
+               index=i;
+        }
+        return users.get(index);
+    }
     // Method to find the user who is following the most users
     // initialize A mapping of the followers list to this user
     // that they follow him
     // Loop through the users
     // return the user who follows the most users
-    // TODO: Find most following user
 
     // Static Method to find mutual followers between two users
-    public static List<Integer> getMutualFollowers(User user1, User user2) {
-        // Initialize a list to store the mutual followers
-        List<Integer> mutualFollowers = new ArrayList<>();
-        // Loop through the followers of the first user
-        for (Integer follower : user1.getFollowers()) {
-            // If the second user is following the current follower
-            if (user2.getFollowers().contains(follower)) {
-                // Add the follower to the mutualFollowers list
-                mutualFollowers.add(follower);
+    public static List<Integer> getMutualFollowers(User user1, User user2){
+            // Initialize a list to store the mutual followers
+            List<Integer> mutualFollowers = new ArrayList<>();
+            // Loop through the followers of the first user
+            for (Integer follower : user1.getFollowers()) {
+                // If the second user is following the current follower
+                if (user2.getFollowers().contains(follower)) {
+                    // Add the follower to the mutualFollowers list
+                    mutualFollowers.add(follower);
+                }
+
+                // Return the mutualFollowers list
+
             }
-        }
-        // Return the mutualFollowers list
         return mutualFollowers;
-    }
+        }
     //Post search: given a specific word or topic, get the posts where this word or topic was mentioned
     public List<Post> searchPosts(String word){
         List<Post> posts=new ArrayList<>();
         for(User user:users){
             for(Post post:user.getPosts()){
                 if(post.getBody().toLowerCase().contains(word.toLowerCase())){
-                    posts.add(post);
+                    if(posts.contains(post))
+                        continue;
+                        posts.add(post);
                 }
                 for(String topic:post.getTopic()){
                     if(topic.toLowerCase().contains(word.toLowerCase())){
+                        if(posts.contains(post))
+                            continue;
                         posts.add(post);
                     }
                 }
@@ -127,7 +155,7 @@ public class Users {
         return posts;
     }
 
-    // TODO: Method for each user suggest a list of users to follow (the followers of his followers)
+
 
 
 
@@ -194,7 +222,21 @@ public class Users {
         json+="\n\t]\n}";
         return json;
     }
+    public List<User> SuggestedUsers(User user){
+        List<User> users1=new ArrayList<User>();
+        for(int i=0;i<user.getFollowers().size();i++){
+            for (int id:users.get(user.getFollowers().get(i)-1).getFollowers()){
+                if(!user.getFollowers().contains(id)&&id!=user.getId()){
 
+                   if(users1.contains(users.get(id-1)))
+                       continue;
+                       users1.add(users.get(id-1));
+                }
+
+            }
+        }
+        return users1;
+    }
     public ArrayList<User> getUsers() {
         return users;
     }

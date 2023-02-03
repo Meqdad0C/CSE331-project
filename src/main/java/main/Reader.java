@@ -35,13 +35,13 @@ public class Reader {
    private List<String> closedTagsOnly = new LinkedList<>();
 
         private List<String> allLines = new LinkedList<>();
-
+        public Reader(List<String> allLines){
+            this.allLines=allLines;
+            extractor(allLines);
+        }
     public Reader(String xml) {
         this.xml = xml;
-        int counter1=0;
-        Pattern pattern = Pattern.compile("<[^?!>]*>");
-        Pattern pattern1 = Pattern.compile(">([^<]*)<");
-        Matcher matcher;
+
 
 
         // read all lines from file
@@ -51,16 +51,40 @@ public class Reader {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        extractor(allLines);
+    }
+    public void extractor(List<String> allLines){
+        String allLinesOneString = "";
+        int counter1=0;
+        Pattern pattern = Pattern.compile("<[^?!>]*>");
+        Pattern pattern1 = Pattern.compile(">([^<]*)</");
+        Matcher matcher;
+        for(String line: allLines){
+            line=line.trim();
+            allLinesOneString+=line;
+        }
+        //extract data between tags and put them in tagData
+//        allLinesOneString = allLinesOneString.replaceAll("\t", "");
+        matcher = pattern1.matcher(allLinesOneString);
+
+        while (matcher.find()) {
+            if(matcher.group().substring(1,matcher.group().length()-2).equals("")){
+                continue;
+            }
+            tagData.add(matcher.group().substring(1,matcher.group().length()-2));
+        }
+
+
         for (String line : allLines) {
-            System.out.println(line);
+
             matcher = pattern.matcher(line);
             while (matcher.find()) {
                 // Print starting and ending indexes
                 // of the pattern in the text
                 // using this functionality of this class
-                System.out.println("Pattern found from "
-                        + matcher.start() + " to "
-                        + (matcher.end() - 1));
+//                System.out.println("Pattern found from "
+//                        + matcher.start() + " to "
+//                        + (matcher.end() - 1));
 
                 // add match to tagsQueue
                 tagsQueue.add(matcher.group());
@@ -87,17 +111,13 @@ public class Reader {
                 lineNumbers.add(counter1);
             }
             counter1++;
-            matcher = pattern1.matcher(line);
-            while (matcher.find()) {
-                tagData.add(matcher.group().substring(1,matcher.group().length()-1));
-            }
         }
         for (int i = 0; i < isOpenClose.size(); i++) {
             if (isOpenClose.get(i)) {
                 openTagsOnly.add(tagNames.get(i));
             }
         }
-        System.out.println("Open tags only: " + openTagsOnly);
+//        System.out.println("Open tags only: " + openTagsOnly);
 
         // add closed tags to list
         for (int i = 0; i < isOpenClose.size(); i++) {
@@ -105,9 +125,9 @@ public class Reader {
                 closedTagsOnly.add(tagNames.get(i));
             }
         }
-        System.out.println("Closed tags only: " + closedTagsOnly);
-        System.out.println(lineNumbers);
-        System.out.println(tagData);
+//        System.out.println("Closed tags only: " + closedTagsOnly);
+//        System.out.println(lineNumbers);
+//        System.out.println(tagData);
 
     }
 
@@ -115,6 +135,7 @@ public class Reader {
     public Reader clone() {
         return new Reader(xml);
     }
+
 
 
     public Stack<String> getTagsStack() {

@@ -32,7 +32,7 @@ public class Consistency {
         List<String> allLines = reader.getAllLines();
 
         // check general consistency
-        System.out.println("Checking general consistency...");
+//        System.out.println("Checking general consistency...");
         checkTagsBalance(openTagsOnly,closedTagsOnly, allLines);
 
         fixClosingTags(openTagsOnly,closedTagsOnly,isOpenClose);
@@ -40,9 +40,9 @@ public class Consistency {
         swapTagsInAllLines(openTagsOnly,closedTagsOnly,isOpenClose,allLines,lineNumbers);
 
         // print all lines
-        for (String line : allLines) {
-            System.out.println(line);
-        }
+//        for (String line : allLines) {
+//            System.out.println(line);
+//        }
     }
     public void checkTagsBalance(List<String> openTagsOnly, List<String> closedTagsOnly, List<String> allLines) {
         if (openTagsOnly.size() == closedTagsOnly.size()){
@@ -50,7 +50,7 @@ public class Consistency {
             return;
         }
         if (openTagsOnly.size() > closedTagsOnly.size()){
-            System.out.println("There are more open tags than closed tags");
+//            System.out.println("There are more open tags than closed tags");
             // append the missing closed tags
             for (int i = 0; i < openTagsOnly.size() - closedTagsOnly.size(); i++) {
                 closedTagsOnly.add("REPLACE_ME");
@@ -62,7 +62,7 @@ public class Consistency {
             }
         }
         else {
-            System.out.println("There are more closed tags than open tags");
+//            System.out.println("There are more closed tags than open tags");
             // compare openTagsOnly and closedTagsOnly and make new list of the missing open tag
             List<String> OpenTagsClone = reader.clone().getOpenTagsOnly();
             List<String> ClosedTagsClone = reader.clone().getClosedTagsOnly();
@@ -96,7 +96,7 @@ public class Consistency {
                 addOpenTag(reader.getIsOpenClose(),reader.getOpenTagsOnly(),reader.getClosedTagsOnly(),closedTagsLineNumbers, allLines);
             }
 
-            System.out.println("dada");
+
 
         }
     }

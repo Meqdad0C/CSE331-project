@@ -16,8 +16,6 @@ public class Prettifying {
         Matcher matcher ;
         List<String> AllLines=reader.getAllLines();
 
-
-
             for (int i = 0; i < reader.getAllLines().size() - 1; i++) {
                 matcher = pattern.matcher(AllLines.get(i));
                 if (matcher.find()) {
@@ -39,19 +37,29 @@ public class Prettifying {
                         }
 
                     }
-                    if (reader.getIsOpenClose().get(j) && reader.getIsOpenClose().get(j + 1)) {
-                        tabs += "\t";
-                    } else if ((!reader.getIsOpenClose().get(j)) && (!reader.getIsOpenClose().get(j + 1))) {
-                        tabs = tabs.substring(0, tabs.length() - 1);
-                    }
-                    j++;
+                    try {
+                        if (reader.getIsOpenClose().get(j) && reader.getIsOpenClose().get(j + 1)) {
+                            tabs += "\t";
+                        } else if ((!reader.getIsOpenClose().get(j)) && (!reader.getIsOpenClose().get(j + 1))) {
+                            tabs = tabs.substring(0, tabs.length() - 1);
+
+                        }
+                        j++;
+                    }catch (Exception e){}
+
+
                 }
                 else{
                     Lines.add(reader.getAllLines().get(i));
                 }
             }
+            try {
+                if(!Lines.get(Lines.size()-1).equals("</"+reader.getTagNames().get(j)+">")){
+                    Lines.add("</"+reader.getTagNames().get(j)+">");
+                }
+            }catch (Exception e){}
 
-        Lines.add("<"+reader.getTagNames().get(j)+">");
+
         return Lines;
     }
 
