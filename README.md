@@ -4,6 +4,7 @@
 ##### JDK Version 19
 ## The command
 ##### java --module-path ".\javafx-sdk-19.0.2.1\lib" --add-modules javafx.controls,javafx.fxml -jar one.jar
+##### or simply execute run.bat
 
 # Contributors 
 | Names | Code |
